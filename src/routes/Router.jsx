@@ -8,6 +8,7 @@ import DashboardLayout from "../layouts/DashboardLayout";
 import Dashboard from "../component/Dashboard/Dashboard";
 import NewProducts from "../component/NewProducts/NewProducts";
 import ViewDetails from "../component/viewDetails/viewDetails";
+import Shop from "../pages/Shop/Shop";
 
 export const router = createBrowserRouter([
   {
@@ -35,6 +36,10 @@ export const router = createBrowserRouter([
         {
          path: 'products/:id',
          Component: ViewDetails,
+        },
+        {
+         path: 'shop',
+         Component: Shop,
         },
          {
               path: "dashboard",
