@@ -7,7 +7,7 @@ import logImg from "../assets/logImg.png";
 const AuthLayout = () => {
     return (
         <div className='max-w-7xl mx-auto '>
-             <Logo></Logo>
+             
               <div className='flex bg-gradient-to-br from-slate-900 via-black to-slate-800 w-full h-full object-cover'>
                 <div className='flex-1'>
                     <Outlet></Outlet>

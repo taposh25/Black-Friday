@@ -1,11 +1,20 @@
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { FaGoogle, FaEye, FaEyeSlash } from "react-icons/fa";
-import { NavLink } from "react-router";
+import { NavLink, useLocation, useNavigate } from "react-router";
+import useAuth from "../../../hooks/useAuth";
+import axios from "axios";
+import useAxiosSecure from "../../../hooks/useAxiosSecure";
 
 const Register = () => {
+  
+   const {registerUser, updateUserProfile} = useAuth();
+
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
+  const location = useLocation();
+  const navigate = useNavigate();
+  const axiosSecure = useAxiosSecure();
 
   const {
     register,
@@ -16,9 +25,84 @@ const Register = () => {
 
   const password = watch("password");
 
-  const onSubmit = (data) => {
-    console.log("Register Data:", data);
-  };
+//   const handleRegistration = async(data) => {
+//     try{
+//       const imageFile = data.photo[0];
+
+//       //firebase register
+//       await registerUser(data.email, data.password);
+//       const user = result.user;
+//       console.log(user);
+
+//       //Upload image to imagebb
+
+//       const formData = new FormData();
+//       formData.append("image", imageFile);
+//       const imgbbKey = `https://api.imgbb.com/1/upload?key=${import.meta.env.VITE_image_host}`;
+
+//       const imgResponse = await axios.post(imgbbKey, formData);
+//       const photoURL = imgResponse.data.data.url;
+//     }
+
+//       // 3. Update Firebase Profile
+
+//       await updateUserProfile({
+//         displaName: data.firstName + " " + data.lastName,
+//         photoURL: photoURL,
+//       })
+
+//        // 4. Save User to MongoDB
+//        const userInfo ={
+//         email: data.email,
+//         displaName: data.firstName + " "+ data.lastName,
+//         photoURL: photoURL,
+//        };
+
+//          await axiosSecure.post("/users", userInfo);
+
+//      // 5. Navigate Home
+//     navigate(location.state?.from || "/");
+
+//      } catch (error) {
+//     console.error("Register Error:", error.message);
+//   }
+// };
+
+  const handleRegistration = async (data) => {
+  try {
+    const imageFile = data.photo[0];
+
+    const result = await registerUser(data.email, data.password);
+    const user = result.user;
+    console.log(user);
+
+    const formData = new FormData();
+    formData.append("image", imageFile);
+
+    const imgbbKey = `https://api.imgbb.com/1/upload?key=${import.meta.env.VITE_image_host}`;
+
+    const imgResponse = await axios.post(imgbbKey, formData);
+    const photoURL = imgResponse.data.data.url;
+
+    await updateUserProfile({
+      displayName: data.firstName + " " + data.lastName,
+      photoURL: photoURL,
+    });
+
+    const userInfo = {
+      email: data.email,
+      displayName: data.firstName + " " + data.lastName,
+      photoURL: photoURL,
+    };
+
+    await axiosSecure.post("/users", userInfo);
+
+     navigate("/login", { state: { from: "register-success" } });
+
+  } catch (error) {
+    console.error("Register Error:", error.message);
+  }
+};
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-black via-slate-900 to-slate-800 px-4 py-10">
@@ -30,7 +114,7 @@ const Register = () => {
           Register and start your journey today
         </p>
 
-        <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
+        <form onSubmit={handleSubmit(handleRegistration)} className="space-y-5">
           {/* Name Fields */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
@@ -65,6 +149,24 @@ const Register = () => {
               )}
             </div>
           </div>
+
+          {/* Photo Upload */}
+
+                  <div>
+          <input
+            type="file"
+            accept="image/*"
+            className="w-full px-4 py-3 rounded-xl bg-white/10 text-white border border-white/20"
+            {...register("photo", {
+              required: "Photo is required",
+            })}
+          />
+          {errors.photo && (
+            <p className="text-red-400 text-sm mt-1">
+              {errors.photo.message}
+            </p>
+          )}
+        </div>
 
           {/* Email */}
           <div>
@@ -160,7 +262,7 @@ const Register = () => {
         {/* Login Link */}
         <p className="text-center text-gray-300 mt-6 text-sm">
           If you have an account, please{" "}
-          <NavLink to="/login">
+          <NavLink to="/login" state={location.state}>
             <span className="text-cyan-400 cursor-pointer hover:underline">
             login now
           </span>

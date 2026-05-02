@@ -1,23 +1,43 @@
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { FaGoogle, FaEye, FaEyeSlash } from "react-icons/fa";
-import { NavLink } from "react-router";
+import { NavLink, useLocation, useNavigate } from "react-router";
+import useAuth from "../../../hooks/useAuth";
 
 const LoginForm = () => {
+  const { signInUser, signInGoogle } = useAuth();
+
   const [showPassword, setShowPassword] = useState(false);
-  const [showConfirm, setShowConfirm] = useState(false);
 
   const {
     register,
     handleSubmit,
-    watch,
     formState: { errors },
   } = useForm();
 
-  const password = watch("password");
+  const navigate = useNavigate();
+  const location = useLocation();
 
-  const onSubmit = (data) => {
-    console.log("Form Data:", data);
+  const from = location.state?.from?.pathname || "/";
+
+  // Email/Password Login
+  const handleLogin = async (data) => {
+    try {
+      await signInUser(data.email, data.password);
+      navigate(from, { replace: true });
+    } catch (error) {
+      console.log(error.message);
+    }
+  };
+
+  // Google Login
+  const handleGoogleLogin = async () => {
+    try {
+      await signInGoogle();
+      navigate(from, { replace: true });
+    } catch (error) {
+      console.log(error.message);
+    }
   };
 
   return (
@@ -30,20 +50,7 @@ const LoginForm = () => {
           Login to continue your journey
         </p>
 
-        <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
-          {/* Name */}
-          <div>
-            <input
-              type="text"
-              placeholder="Full Name"
-              className="w-full px-4 py-3 rounded-xl bg-white/10 text-white border border-white/20 outline-none focus:ring-2 focus:ring-cyan-400"
-              {...register("name", { required: "Name is required" })}
-            />
-            {errors.name && (
-              <p className="text-red-400 text-sm mt-1">{errors.name.message}</p>
-            )}
-          </div>
-
+        <form onSubmit={handleSubmit(handleLogin)} className="space-y-5">
           {/* Email */}
           <div>
             <input
@@ -88,31 +95,6 @@ const LoginForm = () => {
             )}
           </div>
 
-          {/* Confirm Password */}
-          <div className="relative">
-            <input
-              type={showConfirm ? "text" : "password"}
-              placeholder="Confirm Password"
-              className="w-full px-4 py-3 rounded-xl bg-white/10 text-white border border-white/20 outline-none focus:ring-2 focus:ring-cyan-400"
-              {...register("confirmPassword", {
-                required: "Confirm your password",
-                validate: (value) =>
-                  value === password || "Passwords do not match",
-              })}
-            />
-            <span
-              className="absolute right-4 top-4 text-white cursor-pointer"
-              onClick={() => setShowConfirm(!showConfirm)}
-            >
-              {showConfirm ? <FaEyeSlash /> : <FaEye />}
-            </span>
-            {errors.confirmPassword && (
-              <p className="text-red-400 text-sm mt-1">
-                {errors.confirmPassword.message}
-              </p>
-            )}
-          </div>
-
           {/* Submit */}
           <button
             type="submit"
@@ -130,20 +112,22 @@ const LoginForm = () => {
         </div>
 
         {/* Google Login */}
-        <button className="w-full flex items-center justify-center gap-3 py-3 rounded-xl bg-white text-black font-semibold hover:bg-gray-200 transition">
+        <button
+          onClick={handleGoogleLogin}
+          className="w-full flex items-center justify-center gap-3 py-3 rounded-xl bg-white text-black font-semibold hover:bg-gray-200 transition"
+        >
           <FaGoogle className="text-red-500" />
           Login with Google
         </button>
 
         {/* Register */}
         <p className="text-center text-gray-300 mt-6 text-sm">
-          If you haven't account, please{" "}
-         <NavLink to="/register">
-          <span className="text-cyan-400 cursor-pointer hover:underline">
-            register now
-          </span>
-
-         </NavLink>
+          If you don't have an account, please{" "}
+          <NavLink to="/register">
+            <span className="text-cyan-400 cursor-pointer hover:underline">
+              register now
+            </span>
+          </NavLink>
         </p>
       </div>
     </div>
