@@ -131,6 +131,7 @@ const Navbar = () => {
           <ul tabIndex={0} className="menu menu-sm dropdown-content mt-3 z-[1] p-5 shadow-2xl bg-[#111] rounded-box w-64 border border-white/10 gap-4 uppercase font-bold text-white">
             <li><Link to="/">Home</Link></li>
             <li><Link to="/shop">Shop</Link></li>
+            <li><Link to="/about">About</Link></li>
             <li><Link to="/dashboard">Dashboard</Link></li>
             <li><Link to="/login" className="text-red-500">Login / Signup</Link></li>
           </ul>

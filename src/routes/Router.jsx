@@ -9,6 +9,8 @@ import Dashboard from "../component/Dashboard/Dashboard";
 import NewProducts from "../component/NewProducts/NewProducts";
 import ViewDetails from "../component/viewDetails/viewDetails";
 import Shop from "../pages/Shop/Shop";
+import About from "../pages/About/About";
+
 
 export const router = createBrowserRouter([
   {
@@ -42,6 +44,11 @@ export const router = createBrowserRouter([
          Component: Shop,
         },
          {
+            path: 'about',
+            Component: About
+          }, 
+          
+         {
               path: "dashboard",
               Component: DashboardLayout,
               children:[
@@ -54,6 +61,7 @@ export const router = createBrowserRouter([
                   path: "products",
                   Component: NewProducts,
                 },
+               
               ]
             }
           ]
