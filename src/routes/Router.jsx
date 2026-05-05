@@ -10,6 +10,7 @@ import NewProducts from "../component/NewProducts/NewProducts";
 import ViewDetails from "../component/viewDetails/viewDetails";
 import Shop from "../pages/Shop/Shop";
 import About from "../pages/About/About";
+import Contact from "../pages/Contact/Contact";
 
 
 export const router = createBrowserRouter([
@@ -47,7 +48,10 @@ export const router = createBrowserRouter([
             path: 'about',
             Component: About
           }, 
-          
+          {
+            path: 'contact',
+            Component: Contact,
+          },
          {
               path: "dashboard",
               Component: DashboardLayout,
