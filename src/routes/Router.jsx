@@ -11,6 +11,7 @@ import ViewDetails from "../component/viewDetails/viewDetails";
 import Shop from "../pages/Shop/Shop";
 import About from "../pages/About/About";
 import Contact from "../pages/Contact/Contact";
+import Users from "../component/Users/Users";
 
 
 export const router = createBrowserRouter([
@@ -64,6 +65,10 @@ export const router = createBrowserRouter([
                 {
                   path: "products",
                   Component: NewProducts,
+                },
+                {
+                  path: 'users',
+                  Component: Users,
                 },
                
               ]

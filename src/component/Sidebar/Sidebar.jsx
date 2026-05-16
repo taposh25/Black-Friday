@@ -9,9 +9,12 @@ import {
   FaCog,
   FaTimes,
 } from "react-icons/fa";
+import { MdPeople } from "react-icons/md";
 import { NavLink } from "react-router";
+import useRole from "../../hooks/useRole";
 
 const Sidebar = ({ isOpen, setIsOpen }) => {
+  const {role} = useRole();
   return (
     <>
       {/* Overlay for mobile */}
@@ -47,7 +50,14 @@ const Sidebar = ({ isOpen, setIsOpen }) => {
           <SidebarItem to="/dashboard" icon={<FaHome />} label="Home" />
           <SidebarItem to="/dashboard/products" icon={<FaBox />} label="New Products" />
           <SidebarItem to="/dashboard/orders" icon={<FaShoppingCart />} label="Orders" />
-          <SidebarItem to="/dashboard/users" icon={<FaUsers />} label="Users" />
+          {/* <SidebarItem to="/dashboard/users" icon={<FaUsers />} label="Users" /> */}
+          
+             {
+          role === "admin" && (
+            <SidebarItem to="/dashboard/users"  icon={<MdPeople />} label="Users" />
+          )
+        }
+          
           <SidebarItem to="/dashboard/analytics" icon={<FaChartLine />} label="Analytics" />
           <SidebarItem to="/dashboard/settings" icon={<FaCog />} label="Settings" />
         </div>
